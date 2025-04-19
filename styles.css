@@ -416,7 +416,8 @@ body.dark-mode header.scrolled {
     height: 100%;
     background: radial-gradient(circle, rgba(74, 108, 247, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
     z-index: -1;
-    animation: pulse 15s infinite alternate;
+    animation: pulse 15s infinite alternate, rotate 60s linear infinite;
+    transform-origin: center center;
 }
 
 .hero::after {
@@ -428,7 +429,26 @@ body.dark-mode header.scrolled {
     height: 100%;
     background: radial-gradient(circle, rgba(0, 216, 214, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
     z-index: -1;
-    animation: pulse 15s infinite alternate-reverse;
+    animation: pulse 15s infinite alternate-reverse, rotate-reverse 80s linear infinite;
+    transform-origin: center center;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes rotate-reverse {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
 }
 
 @keyframes pulse {
@@ -468,6 +488,16 @@ body.dark-mode header.scrolled {
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
+    animation: textGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes textGlow {
+    0% {
+        text-shadow: 0 0 5px rgba(74, 108, 247, 0.3);
+    }
+    100% {
+        text-shadow: 0 0 20px rgba(74, 108, 247, 0.7);
+    }
 }
 
 body.dark-mode .hero-content h1 {
@@ -495,6 +525,7 @@ body.dark-mode .hero-content h1 {
     flex-wrap: wrap;
     gap: 30px;
     margin-top: 40px;
+    perspective: 1000px;
 }
 
 .feature {
@@ -509,6 +540,38 @@ body.dark-mode .hero-content h1 {
     -webkit-backdrop-filter: blur(10px);
     border: 1px solid var(--glass-border);
     transition: var(--transition);
+    transform-style: preserve-3d;
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+/* Special styling for Web Apps and Fast Delivery features */
+.feature:has(i.fa-laptop-code),
+.feature:has(i.fa-rocket) {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--white);
+    padding: 10px 25px;
+    border-radius: 50px;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    animation: floatGlass 4s ease-in-out infinite;
+    box-shadow: var(--glass-shadow);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+/* Special text styling for Web Apps and Fast Delivery features */
+.feature:has(i.fa-laptop-code) span,
+.feature:has(i.fa-rocket) span {
+    font-weight: 700;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transform: translateZ(10px);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 body.dark-mode .feature {
@@ -516,9 +579,24 @@ body.dark-mode .feature {
     border-color: var(--glass-border);
 }
 
+/* Dark mode styling for Web Apps and Fast Delivery features */
+body.dark-mode .feature:has(i.fa-laptop-code),
+body.dark-mode .feature:has(i.fa-rocket) {
+    background: rgba(30, 30, 30, 0.2);
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
 .feature:hover {
     transform: translateY(-5px);
     box-shadow: var(--shadow);
+}
+
+/* Special hover effect for Web Apps and Fast Delivery features */
+.feature:has(i.fa-laptop-code):hover,
+.feature:has(i.fa-rocket):hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .feature i {
@@ -531,6 +609,18 @@ body.dark-mode .feature {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
+}
+
+/* Special styling for Web Apps and Fast Delivery feature icons */
+.feature:has(i.fa-laptop-code) i,
+.feature:has(i.fa-rocket) i {
+    font-size: 1.3rem;
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
+    color: var(--white);
+    width: 45px;
+    height: 45px;
+    transform: translateZ(10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .hero-image {
@@ -563,25 +653,48 @@ body.dark-mode .feature {
 
 .floating-badge {
     position: absolute;
-    top: -20px;
-    right: -20px;
-    width: 120px;
-    height: 120px;
-    background: rgba(255, 255, 255, 0.1);
+    width: 130px;
+    height: 130px;
+    background: rgba(255, 255, 255, 0.15);
     color: var(--white);
-    padding: 20px;
+    padding: 15px;
     border-radius: 50%;
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: floatGlass 4s ease-in-out infinite;
     box-shadow: var(--glass-shadow);
     z-index: 2;
     transform-style: preserve-3d;
     perspective: 1000px;
+    transition: transform 0.5s ease, box-shadow 0.5s ease;
+}
+
+/* Position each badge elegantly around the hero image */
+.discount-badge {
+    top: 5%;
+    right: 8%;
+    animation: floatGlass 5s ease-in-out infinite;
+}
+
+.web-apps-badge {
+    bottom: 12%;
+    left: -5%;
+    animation: floatGlass2 6s ease-in-out infinite 0.5s;
+}
+
+.fast-delivery-badge {
+    top: 15%;
+    left: -8%;
+    animation: floatGlass3 4.5s ease-in-out infinite 1s;
+}
+
+.flutter-apps-badge {
+    bottom: 8%;
+    right: -5%;
+    animation: floatGlass 5.5s ease-in-out infinite 1.5s;
 }
 
 body.dark-mode .floating-badge {
@@ -594,11 +707,17 @@ body.dark-mode .floating-badge {
     text-align: center;
     position: relative;
     transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
 }
 
 .discount {
-    font-size: 2rem;
-    font-weight: 800;
+    font-size: 1.6rem;
+    font-weight: 700;
     display: block;
     background: linear-gradient(135deg, var(--accent-color), var(--accent-secondary));
     -webkit-background-clip: text;
@@ -607,16 +726,22 @@ body.dark-mode .floating-badge {
     margin-bottom: 5px;
     transform: translateZ(20px);
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    line-height: 1.2;
 }
 
 .code {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    letter-spacing: 2px;
+    letter-spacing: 0.5px;
     color: var(--text-color);
     text-transform: uppercase;
     transform: translateZ(10px);
     opacity: 0.9;
+    white-space: nowrap;
+    max-width: 90%;
+    padding: 3px 8px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
 }
 
 @keyframes floatGlass {
@@ -624,7 +749,32 @@ body.dark-mode .floating-badge {
         transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
     }
     50% {
-        transform: translate3d(-5px, -10px, 20px) rotateX(5deg) rotateY(-5deg);
+        transform: translate3d(-3px, -8px, 15px) rotateX(3deg) rotateY(-3deg);
+    }
+    100% {
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+    }
+}
+
+/* Additional floating animations with different movement patterns */
+@keyframes floatGlass2 {
+    0% {
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+    }
+    50% {
+        transform: translate3d(5px, -7px, 10px) rotateX(-2deg) rotateY(4deg);
+    }
+    100% {
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+    }
+}
+
+@keyframes floatGlass3 {
+    0% {
+        transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
+    }
+    50% {
+        transform: translate3d(-6px, 5px, 8px) rotateX(4deg) rotateY(-1deg);
     }
     100% {
         transform: translate3d(0, 0, 0) rotateX(0deg) rotateY(0deg);
@@ -656,6 +806,10 @@ body.dark-mode .floating-badge {
     -webkit-backdrop-filter: blur(10px);
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .service-card::before {
@@ -670,7 +824,7 @@ body.dark-mode .floating-badge {
 }
 
 .service-card:hover {
-    transform: translateY(-10px) scale(1.02);
+    transform: translateY(-10px) scale(1.02) rotateY(5deg);
     box-shadow: var(--shadow-strong);
 }
 
@@ -689,6 +843,8 @@ body.dark-mode .floating-badge {
     margin-bottom: 25px;
     position: relative;
     transition: var(--transition);
+    transform-style: preserve-3d;
+    transform: translateZ(20px);
 }
 
 .service-icon::after {
@@ -818,6 +974,10 @@ body.dark-mode .floating-badge {
     position: relative;
     box-shadow: var(--shadow);
     transition: var(--transition);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 .portfolio-img {
@@ -839,12 +999,14 @@ body.dark-mode .floating-badge {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(44, 62, 80, 0.9);
+    background: linear-gradient(135deg, rgba(74, 108, 247, 0.8), rgba(44, 62, 80, 0.9));
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     transition: var(--transition);
+    transform-style: preserve-3d;
+    transform: translateZ(20px);
 }
 
 .portfolio-info {
